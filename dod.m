@@ -7,22 +7,29 @@ wexp = linspace(0,dexpected.m(32,1)-dexpected.m(1,1), 52);
 
 X=wexp*52/max(wexp);
 Y=spline(m(:,1),dexp,wexp);
-Y=polyval(polyfit(X,Y,11),X);
+Y=circshift(polyval(polyfit(X,Y,11),X),26);
 
 figure;
 % plot(dexpected.m(:,1), dexp, '.-'); hold on;
 % figure;
-plot(X,circshift(Y,26), '.-'); hold on;
+plot((1:52),Y, '.-'); hold on;
 % plot(wexp*52/max(wexp), polyval(polyfit(m(:,1),dexp,5),wexp*52/max(wexp)), '.-'); hold off;
 
 d = load('agemean.txt');
 d = [0.8*sum(d([1,53],:)); d(2:52,:)];
-plot(sum(d(:,2:4)')+sum(d(:,6:8)'), '.-')
+deadNormal = sum(d(:,2:4)')+sum(d(:,6:8)')
+plot(deadNormal, '.-')
 
 d = load('age2020.txt');
 d = [0.6*sum(d([1,23],:)); d(2:22,:)];
-plot(sum(d(:,2:4)')+sum(d(:,6:8)'), '.-')
+dead2020 = sum(d(:,2:4)')+sum(d(:,6:8)');
+plot(dead2020, '.-')
 
+title('Overdodlighet 2020, 65ar och uppat');
+xlabel('vecka')
+ylabel('antal/vecka')
+
+legend('forvantad dodlighet', 'medel 2015-2019', '2020')
 
 % d = load('dod.txt');
 % 

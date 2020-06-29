@@ -10,19 +10,20 @@ lockdowns = jsondecode(fileread('data\ft_lockdown.json'));
 % [~,index] = sortrows({lockdowns.data(4).countries.iso3}.'); lockdowns.data(4).countries = lockdowns.data(4).countries(index); clear index
 % [val.allData.world(53).timeSeries.date]';
 
-% country = 182; countryLd = 152;
-% country = 74; countryLd = 43;
-% country = 53; countryLd = 46;
-% country = 144; countryLd = 119;
-% country = 200; countryLd = 59;
-% country = 176; countryLd = 52; % Spain
+% country = 182; countryLd = 152; % Sweden
+% country = 74; countryLd = 43; % Germany
+% country = 53; countryLd = 46; % Denmark
+% country = 144; countryLd = 119; % Norway
+% country = 200; countryLd = 59; % UK
+country = 176; countryLd = 52; % Spain
 % country = 97; countryLd = 82; % Italy
-country = 20; countryLd = 12; % Belgium
+% country = 20; countryLd = 12; % Belgium
+% country = 13; countryLd = 9; % Austria
 nmean = 7;
 dateFormat = 7;
 
 DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020'};
-datetime(DateString)
+
 
 lockdownStringency = [];
 % lockdownStringencyDay = [];
@@ -53,9 +54,13 @@ end
 
 [day0, day1, day2, deaths] = getDeaths(country,nmean);
 plot(day2, deaths/max(deaths), '.-'); hold on
-plot(lockdownStringencyDay, lockdownStringency/100, '.-'); hold on
+plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-'); hold on
 grid on
-title([rates.allData.world(country).area iso3(countryLd)]);
+title([rates.allData.world(country).area]);% iso3(countryLd)]);
+set(gca, 'XLim', datetime({'02/18/2020', '06/15/2020'},'format','MM/dd/yyyy'))
+legend('#deaths / peak value', 'lockdown stringency (+20 days)')
+ylim([0, 1.1])
+
 % Xfit=1:1+160-68;
 % Yfit=deaths(68:160);
 % set(gca, 'XTick', datetime(DateString,'format','MM/dd/yyyy'))

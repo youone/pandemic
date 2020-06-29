@@ -15,10 +15,10 @@ lockdowns = jsondecode(fileread('data\ft_lockdown.json'));
 % country = 53; countryLd = 46; % Denmark
 % country = 144; countryLd = 119; % Norway
 % country = 200; countryLd = 59; % UK
-country = 176; countryLd = 52; % Spain
+% country = 176; countryLd = 52; % Spain
 % country = 97; countryLd = 82; % Italy
 % country = 20; countryLd = 12; % Belgium
-% country = 13; countryLd = 9; % Austria
+country = 13; countryLd = 9; % Austria
 nmean = 7;
 dateFormat = 7;
 
@@ -53,7 +53,7 @@ end
 % % datetick('x',dateFormat, 'keepticks')
 
 [day0, day1, day2, deaths] = getDeaths(country,nmean);
-plot(day2, deaths/max(deaths), '.-'); hold on
+plot(day2 + 3.5, deaths/max(deaths), '.-'); hold on
 plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-'); hold on
 grid on
 title([rates.allData.world(country).area]);% iso3(countryLd)]);

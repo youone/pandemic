@@ -4,8 +4,8 @@ close all;
 global rates;
 global lockdowns;
 
-rates = jsondecode(fileread('data\ft_rates.json'));
-[~,index] = sortrows({rates.allData.world.area}.'); rates.allData.world = rates.allData.world(index); clear index
+rates = jsondecode(fileread('data\ft_rates_new.json'));
+[~,index] = sortrows({rates.world.area}.'); rates.world = rates.world(index); clear index
 
 lockdowns = jsondecode(fileread('data\ft_lockdown.json'));
 % [~,index] = sortrows({lockdowns.data(4).countries.iso3}.'); lockdowns.data(4).countries = lockdowns.data(4).countries(index); clear index
@@ -23,7 +23,7 @@ country = 20; countryLd = 12; % Belgium
 nmean = 7;
 dateFormat = 7;
 
-DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020'};
+DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020', '06/30/2020'};
 
 
 lockdownStringency = [];
@@ -57,8 +57,8 @@ end
 plot(day2 + 3, deaths/max(deaths), '.-'); hold on
 plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-'); hold on
 grid on
-title([rates.allData.world(country).area]);% iso3(countryLd)]);
-set(gca, 'XLim', datetime({'02/18/2020', '06/15/2020'},'format','MM/dd/yyyy'))
+title([rates.world(country).area]);% iso3(countryLd)]);
+set(gca, 'XLim', datetime({'02/18/2020', '07/20/2020'},'format','MM/dd/yyyy'))
 legend('#deaths / peak value', 'lockdown stringency (+20 days)')
 ylim([0, 1.1])
 
@@ -77,8 +77,8 @@ ylim([0, 1.1])
 function [day0, day1, day2, deaths] = getDeaths(country, nmean)
     global rates;
 
-    countryData = struct2cell(rates.allData.world(country).timeSeries);
-    countryPopulation = rates.allData.world(country).population;
+    countryData = struct2cell(rates.world(country).timeSeries);
+    countryPopulation = rates.world(country).population;
 
     day0 = 1:length(countryData(6,:));
     day1 = [];
@@ -90,15 +90,15 @@ function [day0, day1, day2, deaths] = getDeaths(country, nmean)
 
     day2 = datetime(day1,'ConvertFrom','datenum');
 
-    deaths = 1000000*movmean([rates.allData.world(country).timeSeries.new_deaths], nmean)/countryPopulation;
+    deaths = 1000000*movmean([rates.world(country).timeSeries.new_deaths], nmean)/countryPopulation;
 
 end
 
 function [day0, day1, day2, deaths] = getDeathsSweden(nmean)
     global rates;
 
-    countryData = struct2cell(rates.allData.world(182).timeSeries);
-    countryPopulation = rates.allData.world(182).population;
+    countryData = struct2cell(rates.world(182).timeSeries);
+    countryPopulation = rates.world(182).population;
 
     day0 = 1:length(countryData(6,:));
     day1 = [];
@@ -111,7 +111,7 @@ function [day0, day1, day2, deaths] = getDeathsSweden(nmean)
     day2 = datetime(day1,'ConvertFrom','datenum');
     
     sDeaths = load('data\sverige.txt');
-    d = [rates.allData.world(182).timeSeries.new_deaths]
+    d = [rates.world(182).timeSeries.new_deaths]
     
     d = zeros(size(d));
     d(74:74+104) = sDeaths(1:1+104);

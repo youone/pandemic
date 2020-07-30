@@ -11,14 +11,14 @@ lockdowns = jsondecode(fileread('data\ft_lockdown.json'));
 % [~,index] = sortrows({lockdowns.data(4).countries.iso3}.'); lockdowns.data(4).countries = lockdowns.data(4).countries(index); clear index
 % [val.allData.world(53).timeSeries.date]';
 
-% country = 182; countryLd = 152; % Sweden
+country = 183; countryLd = 152; % Sweden
 % country = 74; countryLd = 43; % Germany
 % country = 53; countryLd = 46; % Denmark
 % country = 144; countryLd = 119; % Norway
 % country = 200; countryLd = 59; % UK
 % country = 176; countryLd = 52; % Spain
 % country = 97; countryLd = 82; % Italy
-country = 20; countryLd = 12; % Belgium
+% country = 20; countryLd = 12; % Belgium
 % country = 13; countryLd = 9; % Austria
 nmean = 7;
 dateFormat = 7;
@@ -53,7 +53,8 @@ end
 % % set(gca, 'XTick', datetime(DateString,'format','MM/dd/yyyy'))
 % % datetick('x',dateFormat, 'keepticks')
 
-[day0, day1, day2, deaths] = getDeaths(country,nmean);
+[day0, day1, day2, deaths] = getDeathsSweden(nmean);
+%[day0, day1, day2, deaths] = getDeaths(country,nmean);
 plot(day2 + 3, deaths/max(deaths), '.-'); hold on
 plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-'); hold on
 grid on
@@ -97,8 +98,8 @@ end
 function [day0, day1, day2, deaths] = getDeathsSweden(nmean)
     global rates;
 
-    countryData = struct2cell(rates.world(182).timeSeries);
-    countryPopulation = rates.world(182).population;
+    countryData = struct2cell(rates.world(183).timeSeries);
+    countryPopulation = rates.world(183).population;
 
     day0 = 1:length(countryData(6,:));
     day1 = [];
@@ -110,11 +111,11 @@ function [day0, day1, day2, deaths] = getDeathsSweden(nmean)
 
     day2 = datetime(day1,'ConvertFrom','datenum');
     
-    sDeaths = load('data\sverige.txt');
-    d = [rates.world(182).timeSeries.new_deaths]
+    sDeaths = load('data\sverige_new.txt');
+    d = [rates.world(183).timeSeries.new_deaths]
     
     d = zeros(size(d));
-    d(74:74+104) = sDeaths(1:1+104);
+    d(74:74+122) = sDeaths(1:1+122);
     
     deaths = 1000000*movmean(d, nmean)/countryPopulation;
 

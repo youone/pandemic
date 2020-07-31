@@ -23,7 +23,11 @@ country = 183; countryLd = 152; % Sweden
 nmean = 7;
 dateFormat = 7;
 
-DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020', '06/30/2020'};
+comparecountry = 20; comparecountryLd = 12; % Belgium
+% comparecountry = 183; comparecountryLd = 152; % Sweden
+
+%DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020', '06/30/2020'};
+DateString = {'3/1/2020', '4/1/2020',  '5/1/2020', '6/1/2020', '7/1/2020'};
 
 
 lockdownStringency = [];
@@ -54,13 +58,17 @@ end
 % % datetick('x',dateFormat, 'keepticks')
 
 [day0, day1, day2, deaths] = getDeathsSweden(nmean);
-%[day0, day1, day2, deaths] = getDeaths(country,nmean);
-plot(day2 + 3, deaths/max(deaths), '.-'); hold on
-plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-'); hold on
+% [day0, day1, day2, deaths] = getDeaths(country,nmean);
+% [~, ~, ~, comparedeaths] = getDeathsSweden(nmean);
+[~, ~, ~, comparedeaths] = getDeaths(comparecountry,nmean);
+plot(day2 + 3, deaths/max(deaths), '.-', 'Color', 'blue'); hold on
+plot(day2 + 3, comparedeaths/max(comparedeaths), '.-', 'Color',  [0.7 0.7 0.7]); hold on
+plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-', 'Color', 'red'); hold on
 grid on
 title([rates.world(country).area]);% iso3(countryLd)]);
 set(gca, 'XLim', datetime({'02/18/2020', '07/20/2020'},'format','MM/dd/yyyy'))
-legend('#deaths / peak value', 'lockdown stringency (+20 days)')
+set(gca, 'XTick', datetime(DateString,'format','MM/dd/yyyy'))
+legend(['#deaths / peak value (' rates.world(country).area ')'], ['#deaths / peak value (' rates.world(comparecountry).area ')'],  'lockdown stringency (+20 days)')
 ylim([0, 1.1])
 
 % Xfit=1:1+160-68;

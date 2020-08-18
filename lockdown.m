@@ -31,6 +31,9 @@ comparecountry = 35; comparecountryLd = 12; % NewYork
 % comparecountry = 53; comparecountryLd = 46; % Denmark
 % comparecountry = 201; comparecountryLd = 59; % UK
 
+comparecountry2 = 20; comparecountryLd2 = 12; % Belgium
+
+
 continent = 'us';
 
 %DateString = {'03/01/2020', '03/10/2020',  '03/20/2020', '04/01/2020',  '04/10/2020', '04/20/2020', '05/01/2020',  '05/10/2020', '05/20/2020', '06/01/2020',  '06/10/2020', '06/20/2020', '06/30/2020'};
@@ -68,16 +71,21 @@ end
 % [day0, day1, day2, deaths] = getDeaths(country,nmean);
 % [~, ~, ~, comparedeaths] = getDeathsSweden(nmean);
 [~, ~, cday2, comparedeaths] = getDeaths('us',comparecountry,nmean);
-plot(day2 + 3, deaths/max(deaths), '.-', 'Color', 'blue'); hold on
+[~, ~, cday22, comparedeaths2] = getDeaths('world',comparecountry2,nmean);
+plot(day2 + 3, deaths/max(deaths), '.-', 'Color', 'black'); hold on
 plot(cday2 + 3, comparedeaths/max(comparedeaths), '.-', 'Color',  'red'); hold on
+plot(cday22 + 3, comparedeaths2/max(comparedeaths2), '.-', 'Color',  'blue'); hold on
 % plot(cday2 + 3, comparedeaths/max(comparedeaths), '.-', 'Color',  [0.7 0.7 0.7]); hold on
 % plot(lockdownStringencyDay + 20, lockdownStringency/100, '.-', 'Color', 'red'); hold on
 grid on
 % title([rates.world(country).area]);% iso3(countryLd)]);
-title('Sweden - New York');% iso3(countryLd)]);
+title('Sweden - New York - Belgium');% iso3(countryLd)]);
 set(gca, 'XLim', datetime({'02/18/2020', '07/20/2020'},'format','MM/dd/yyyy'))
 set(gca, 'XTick', datetime(DateString,'format','MM/dd/yyyy'))
-legend(['#deaths / peak value (' rates.world(country).area ')'], ['#deaths / peak value (' rates.(continent)(comparecountry).area ')'],  'lockdown stringency (+20 days)')
+legend(['#deaths / peak value (' rates.world(country).area ')'], ...
+    ['#deaths / peak value (' rates.(continent)(comparecountry).area ')'], ...
+    ['#deaths / peak value (' rates.world(comparecountry2).area ')'], ...
+    'lockdown stringency (+20 days)')
 ylim([0, 1.1])
 
 % Xfit=1:1+160-68;
@@ -96,7 +104,7 @@ function [day0, day1, day2, deaths] = getDeaths(continent, country, nmean)
     global rates;
 
     dateindex.us = 8;
-    dateindex.world = 8;
+    dateindex.world = 6;
     countryData = struct2cell(rates.(continent)(country).timeSeries)
     countryPopulation = rates.(continent)(country).population;
 

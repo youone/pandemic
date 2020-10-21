@@ -31,7 +31,9 @@ comparecountry = 35; comparecountryLd = 12; % NewYork
 % comparecountry = 53; comparecountryLd = 46; % Denmark
 % comparecountry = 201; comparecountryLd = 59; % UK
 
-comparecountry2 = 20; comparecountryLd2 = 12; % Belgium
+% comparecountry2 = 20; comparecountryLd2 = 12; % Belgium
+% comparecountry2 = 53; comparecountryLd2 = 46; % Denmark
+comparecountry2 = 69; comparecountryLd2 = 46; % Denmark
 
 
 continent = 'us';
@@ -112,7 +114,7 @@ function [day0, day1, day2, deaths] = getDeaths(continent, country, nmean)
     day1 = [];
     day2 = [];
     for i = (1:length(countryData(dateindex.(continent),:)))
-      day1(i) = datenum(countryData(dateindex.(continent),i),'yyyy-mm-ddTHH:MM:ss.fffZ');
+      day1(i) = datenum(countryData(dateindex.(continent),i),'yyyy-mm-ddTHH:MM:ss.fffZ') + 5;
 %       day(i) = datenum(countryData(6,i),'yyyy-mm-ddTHH:MM:ss.fffZ') - datenum([2020 3 1]);
     end
 

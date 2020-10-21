@@ -7,17 +7,17 @@ rates = jsondecode(fileread('data\ft_rates_new.json'));
 
 nmean = 14;
 
-[seDeaths, seDates] = getDeathsSweden(getCountry('world', 'Sweden'), nmean, 2);
-[dkDeaths, dkDates] = getDeaths('world', 'Denmark', nmean, 3);
-[bgDeaths, bgDates] = getDeaths('world', 'Belgium', nmean, 0);
-[spDeaths, spDates] = getDeaths('world', 'Spain', nmean, 9);
-[geDeaths, geDates] = getDeaths('world', 'Germany', nmean, -2);
-[nyDeaths, nyDates] = getDeaths('us', 'New York', nmean, -3);
-[auDeaths, auDates] = getDeaths('world', 'Austria', nmean, 2);
-[frDeaths, frDates] = getDeaths('world', 'France', nmean, 1);
-[itDeaths, itDates] = getDeaths('world', 'Italy', nmean, 11);
+[seDeaths, seDates] = getDeathsSweden(getCountry('world', 'Sweden'), nmean, 0);
+[dkDeaths, dkDates] = getDeaths('world', 'Denmark', nmean, 1);
+[bgDeaths, bgDates] = getDeaths('world', 'Belgium', nmean, -2);
+[spDeaths, spDates] = getDeaths('world', 'Spain', nmean, 7);
+[geDeaths, geDates] = getDeaths('world', 'Germany', nmean, -4);
+[nyDeaths, nyDates] = getDeaths('us', 'New York', nmean, -5);
+[auDeaths, auDates] = getDeaths('world', 'Austria', nmean, 0);
+[frDeaths, frDates] = getDeaths('world', 'France', nmean, -2);
+[itDeaths, itDates] = getDeaths('world', 'Italy', nmean, 9);
 % [skDeaths, skDates] = getDeaths('world', 'South Korea', nmean, 11);
-[ukDeaths, ukDates] = getDeaths('world', 'United Kingdom', nmean, -3);
+[ukDeaths, ukDates] = getDeaths('world', 'United Kingdom', nmean, -5);
 
 % Tde = array2table([days(dkDates' - datetime(2019,1,1)), dkDeaths']);
 % Tsp = array2table([days(spDates' - datetime(2019,1,1)), spDeaths']);
@@ -39,6 +39,7 @@ meanArray = muliOuterJoin(...
     )
 %     array2table([datenum(ukDates'), ukDeaths'])...
 meanDeaths =  mean(table2array(meanArray(:,2:end)),2);
+meanDeaths = meanDeaths/max(meanDeaths);
 meanHours =  datetime(table2array(meanArray(:,1)),'ConvertFrom','datenum');
 
 %     array2table([days(spDates' - datetime(2019,1,1)), spDeaths']),...
@@ -49,6 +50,16 @@ meanHours =  datetime(table2array(meanArray(:,1)),'ConvertFrom','datenum');
 DateString = {'3/1/2020', '4/1/2020',  '5/1/2020', '6/1/2020', '7/1/2020'};
 
 color = [1 0 0 0.3];
+opacity = 0.5;
+linewidth = 0.7;
+% plot(dkDates, dkDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); hold on
+% plot(bgDates, bgDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(spDates, spDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(geDates, geDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(nyDates, nyDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(auDates, auDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(frDates, frDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
+% plot(itDates, itDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); 
 plot(dkDates, dkDeaths, '-', 'Color', color); hold on
 plot(bgDates, bgDeaths, '-', 'Color', color); 
 plot(spDates, spDeaths, '-', 'Color', color); 
@@ -57,14 +68,32 @@ plot(nyDates, nyDeaths, '-', 'Color', color);
 plot(auDates, auDeaths, '-', 'Color', color); 
 plot(frDates, frDeaths, '-', 'Color', color); 
 plot(itDates, itDeaths, '-', 'Color', color); 
+% plot(dkDates, dkDeaths, '-'); hold on
+% plot(bgDates, bgDeaths, '-'); 
+% plot(spDates, spDeaths, '-'); 
+% plot(geDates, geDeaths, '-'); 
+% plot(nyDates, nyDeaths, '-'); 
+% plot(auDates, auDeaths, '-'); 
+% plot(frDates, frDeaths, '-'); 
+% plot(itDates, itDeaths, '-'); 
 % plot(skDates, skDeaths, '-', 'Color', 'red'); 
-plot(meanHours, meanDeaths/max(meanDeaths), '-', 'Color', 'red', 'LineWidth', 2)
+plot(meanHours, meanDeaths, '-', 'Color', 'red', 'LineWidth', 2)
 plot(seDates, seDeaths, '-', 'Color', 'black', 'LineWidth', 2)
 % plot(ukDates - 0, ukDeaths/max(ukDeaths), '-', 'Color', 'blue'); 
 hold off
 grid on
-legend('Denmark', 'Belgium', 'Spain', 'Germany', 'New York', 'Austria', 'France', 'Italy', 'mean value', 'Sweden')
-title('No. deaths (time shifted) / peak value');
+legend(...
+    'Denmark (1)',...
+    'Belgium (-2)',...
+    'Spain (7)',...
+    'Germany (-4)',...
+    'New York (-5)',...
+    'Austria (0)',...
+    'France (-2)',...
+    'Italy (9)',...
+    'mean value',...
+    'Sweden (0)')
+title('No. deaths / peak value (time shifted)');
 % title('Sweden - New York - Belgium');% iso3(countryLd)]);
 % set(gca, 'XLim', datetime({'02/18/2020', '07/20/2020'},'format','MM/dd/yyyy'))
 % set(gca, 'XTick', datetime(DateString,'format','MM/dd/yyyy'))

@@ -1,4 +1,5 @@
 close all;
+load('ginput');
 
 dexpected = load('ginput');
 dexp = -(800/368)*dexpected.m(:,2)+2000;

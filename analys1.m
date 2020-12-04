@@ -159,6 +159,7 @@ title('No. deaths / peak value (time shifted)');
 ylim([0, 1.1])
 xlim([min(meanHours), max(meanHours)-7])
 text(min(meanHours)+80, 0.9, sprintf('curves are aligned in time\nto the estimated inflection\npoint (0.5) where restrictions\nstarts to have an effect\non the death tolls'))
+text(min(meanHours)+145, 0.34, sprintf('numbers in paranthesis\nshows time shift in days'))
 
 % curves are aligned in time\nto the estimated inflection\npoint where restrictions\nstarts to have an effect\non the death tolls
 % curves are aligned in time\n

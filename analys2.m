@@ -7,13 +7,26 @@ rates = jsondecode(fileread('data\ft_rates_new.json'));
 
 nmean = 14;
 
-[seDeaths, seDates] = getDeathsSweden(getCountry('world', 'Sweden'), nmean, 0);
+% plot(dkDates + 0, dkDeaths, '-'); hold on
+% plot(noDates - 3.5, noDeaths, '-'); hold on
+% plot(fiDates - 17, fiDeaths, '-'); hold on
+% plot(bgDates - 2, bgDeaths, '-'); hold on
+% plot(spDates + 6.5, spDeaths, '-'); hold on
+% plot(geDates - 5, geDeaths, '-'); hold on
+% plot(nyDates - 5, nyDeaths, '-'); hold on
+% plot(auDates + 1, auDeaths, '-'); hold on
+% plot(frDates - 1, frDeaths, '-'); hold on
+% plot(itDates + 10, itDeaths, '-'); hold on
+% plot(ukDates - 5, ukDeaths, '-'); hold on
+% plot(irDates - 14.5, irDeaths, '-'); hold on
+% plot(nlDates + 1, nlDeaths, '-'); hold on
 
+[seDeaths, seDates] = getDeathsSweden(getCountry('world', 'Sweden'), nmean, 0);
 [dkDeaths, dkDates] = getDeaths('world', 'Denmark', nmean, 0);
-[noDeaths, noDates] = getDeaths('world', 'Norway', nmean, -3);
-[fiDeaths, fiDates] = getDeaths('world', 'Finland', nmean, -17);
+[noDeaths, noDates] = getDeaths('world', 'Norway', nmean, -3.5);
+% [fiDeaths, fiDates] = getDeaths('world', 'Finland', nmean, -17);
 [bgDeaths, bgDates] = getDeaths('world', 'Belgium', nmean, -2);
-[spDeaths, spDates] = getDeaths('world', 'Spain', nmean, 6);
+[spDeaths, spDates] = getDeaths('world', 'Spain', nmean, 6.5);
 [geDeaths, geDates] = getDeaths('world', 'Germany', nmean, -5);
 [nyDeaths, nyDates] = getDeaths('us', 'New York', nmean, -5);
 [auDeaths, auDates] = getDeaths('world', 'Austria', nmean, 1);
@@ -21,23 +34,8 @@ nmean = 14;
 [itDeaths, itDates] = getDeaths('world', 'Italy', nmean, 10);
 % [skDeaths, skDates] = getDeaths('world', 'South Korea', nmean, 0);
 [ukDeaths, ukDates] = getDeaths('world', 'United Kingdom', nmean, -5);
-[irDeaths, irDates] = getDeaths('world', 'Ireland', nmean, -14);
+% [irDeaths, irDates] = getDeaths('world', 'Ireland', nmean, -14.5);
 [nlDeaths, nlDates] = getDeaths('world', 'Netherlands', nmean, 1);
-
-% [dkDeaths, dkDates] = getDeaths('world', 'Denmark', nmean, 1);
-% [noDeaths, noDates] = getDeaths('world', 'Norway', nmean, -4);
-% [fiDeaths, fiDates] = getDeaths('world', 'Finland', nmean, -15);
-% [bgDeaths, bgDates] = getDeaths('world', 'Belgium', nmean, -2);
-% [spDeaths, spDates] = getDeaths('world', 'Spain', nmean, 7);
-% [geDeaths, geDates] = getDeaths('world', 'Germany', nmean, -4);
-% [nyDeaths, nyDates] = getDeaths('us', 'New York', nmean, -5);
-% [auDeaths, auDates] = getDeaths('world', 'Austria', nmean, 0);
-% [frDeaths, frDates] = getDeaths('world', 'France', nmean, -2);
-% [itDeaths, itDates] = getDeaths('world', 'Italy', nmean, 9);
-% % [skDeaths, skDates] = getDeaths('world', 'South Korea', nmean, 11);
-% [ukDeaths, ukDates] = getDeaths('world', 'United Kingdom', nmean, -5);
-% [irDeaths, irDates] = getDeaths('world', 'Ireland', nmean, -15);
-% [nlDeaths, nlDates] = getDeaths('world', 'Netherlands', nmean, 1);
 
 % Tde = array2table([days(dkDates' - datetime(2019,1,1)), dkDeaths']);
 % Tsp = array2table([days(spDates' - datetime(2019,1,1)), spDeaths']);
@@ -78,6 +76,42 @@ color = [1 0 0 0.3];
 opacity = 0.5;
 linewidth = 0.8;
 
+% figure
+% plot(dkDates + 0, dkDeaths, '-'); hold on
+% plot(noDates - 3.5, noDeaths, '-'); hold on
+% % plot(fiDates - 17, fiDeaths, '-'); hold on
+% plot(bgDates - 2, bgDeaths, '-'); hold on
+% plot(spDates + 6.5, spDeaths, '-'); hold on
+% plot(geDates - 5, geDeaths, '-'); hold on
+% plot(nyDates - 5, nyDeaths, '-'); hold on
+% plot(auDates + 1, auDeaths, '-'); hold on
+% plot(frDates - 1, frDeaths, '-'); hold on
+% plot(itDates + 10, itDeaths, '-'); hold on
+% plot(ukDates - 5, ukDeaths, '-'); hold on
+% % plot(irDates - 14.5, irDeaths, '-'); hold on
+% plot(nlDates + 1, nlDeaths, '-'); hold on
+% plot(seDates, seDeaths, '-', 'Color', 'black', 'LineWidth', 2); hold off
+% legend(...
+%     'Denmark (1)',...
+%     'Norway (-2)',...
+%     'Belgium (-2)',...
+%     'Spain (7)',...
+%     'Germany (-4)',...
+%     'New York (-5)',...
+%     'Austria (0)',...
+%     'France (-2)',...
+%     'Italy (9)',...
+%     'UK (0)',...
+%     'Netherlands (1)',...
+%     'Sweden (0)')
+% 
+% % load('tmplimits');
+% % set(gca,'xlim',xlimits);
+% % set(gca,'ylim',ylimits);
+% return
+
+
+
 % plot(dkDates, dkDeaths, '-', 'Color', [hsv2rgb([rand(1,1),1,1]), opacity], 'LineWidth', linewidth); hold on
 % plot(noDates, noDeaths, '-', 'Color', [hsv2rgb([rand(1,1),1,1]), opacity], 'LineWidth', linewidth);
 % plot(bgDates, bgDeaths, '-', 'Color', [hsv2rgb([rand(1,1),1,1]), opacity], 'LineWidth', linewidth); 
@@ -90,7 +124,7 @@ linewidth = 0.8;
 % plot(ukDates, ukDeaths, '-', 'Color', [hsv2rgb([rand(1,1),1,1]), opacity], 'LineWidth', linewidth); 
 % plot(nlDates, nlDeaths, '-', 'Color', [hsv2rgb([rand(1,1),1,1]), opacity], 'LineWidth', linewidth); 
 filename = 'deathratederease.gif';
-h=figure('position', [1440 918 707 420]);
+h=figure;
 
 % plot(dkDates, dkDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth); hold on
 % plot(noDates, noDeaths, '-', 'Color', [rand(1,1),rand(1,1),rand(1,1),opacity], 'LineWidth', linewidth);
@@ -133,21 +167,21 @@ plot(seDates, seDeaths, '-', 'Color', 'black', 'LineWidth', 2)
 hold off
 grid on
 legend(...
-    'Denmark (0)',...
-    'Norway (-3)',...
+    'Denmark (1)',...
+    'Norway (-5)',...
+    'Finland (-5)',...
     'Belgium (-2)',...
-    'Spain (6)',...
-    'Germany (-5)',...
+    'Spain (7)',...
+    'Germany (-4)',...
     'New York (-5)',...
-    'Austria (1)',...
-    'France (-1)',...
-    'Italy (10)',...
-    'UK (-5)',...
+    'Austria (0)',...
+    'France (-2)',...
+    'Italy (9)',...
+    'UK (0)',...
     'Netherlands (1)',...
     'mean value',...
-    'Sweden (0)','Location','NorthEastOutside')
+    'Sweden (0)')
 title('No. deaths / peak value (time shifted)');
-
 %     'Ireland (-15)',...
 % title('Sweden - New York - Belgium');% iso3(countryLd)]);
 % set(gca, 'XLim', datetime({'02/18/2020', '07/20/2020'},'format','MM/dd/yyyy'))
@@ -157,19 +191,13 @@ title('No. deaths / peak value (time shifted)');
 %     ['#deaths / peak value (' rates.world(comparecountry2).area ')'], ...
 %     'lockdown stringency (+20 days)')
 ylim([0, 1.1])
-xlim([min(meanHours), max(meanHours)-7])
-text(min(meanHours)+80, 0.9, sprintf('curves are aligned in time\nto the estimated inflection\npoint (0.5) where restrictions\nstarts to have an effect\non the death tolls'))
-
-% curves are aligned in time\nto the estimated inflection\npoint where restrictions\nstarts to have an effect\non the death tolls
-% curves are aligned in time\n
-% to the estimated inflection\n
-% point where restrictions\n 
-% starts to have an effect\n 
-% on the death toll\n
+xlim([min(meanHours), max(meanHours)])
 
 for i=1:11
     addToGif(h,filename,lines,i, color);
 end
+
+
 
 function addToGif(h, filename, lines, n, color)
 

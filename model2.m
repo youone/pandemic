@@ -8,7 +8,7 @@ person.infectionDay = 0;
 person.removalDay = 0;
 person.deathDay = 0;
 
-[daysToInfect, infectSchedule, removalDay, deathDay] = infect(1,3);
+[daysToInfect, infectSchedule, removalDay, deathDay] = infect(1,3, false);
 infecteds(1) = person; 
 infecteds(1).contagent = [1,2];
 infecteds(1).infectSchedule = infectSchedule;
@@ -18,8 +18,8 @@ infecteds(1).deathDay = deathDay;
 
 is = [];
 % Re = [];
-R0 = 3;
-Rend = 0.9;
+R0 = 2.5;
+Rend = 0.7;
 Re = (-sigmoid(1:200,40,0.3)+1)*(R0-Rend)+Rend;
 
 nDays = 200;
@@ -27,6 +27,7 @@ nDays = 200;
 nInfected = 1;
 nRemoved = 0;
 deathDays = [];
+infectedDays = [];
 
 tholdDay = 0;
 
@@ -50,26 +51,46 @@ for day = 1:nDays
     i=1;
     for infected = infecteds
 
-%         infected.infectionDay + find(infected.infectSchedule)
-%         infected.infectSchedule(find(infected.infectSchedule))
-        [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, Re(day));
-        
-        if ismember(day, infected.contagent)
-            newPerson = person; 
+        dayToInfect = infected.infectionDay + find(infected.infectSchedule);
+        nToInfect = infected.infectSchedule(find(infected.infectSchedule));
 
-            newPerson.contagent = daysToInfect;
-            newPerson.infectSchedule = infectSchedule;
-            newPerson.infectionDay = day;
-            newPerson.removalDay = removalDay;
-            newPerson.deathDay = deathDay;
+        if ismember(day, dayToInfect)
+            for iInfect = 1:nToInfect(find(dayToInfect==day))
+              newPerson = person; 
+              [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, Re(day), day>20);
+%             newPerson.contagent = daysToInfect;
+              newPerson.infectSchedule = infectSchedule;
+              newPerson.infectionDay = day;
+              newPerson.removalDay = removalDay;
+              newPerson.deathDay = deathDay;
+% 
+              infecteds = [infecteds, newPerson];
+              nInfected = nInfected + 1 ;
+              infectedDays = [infectedDays, day];
+            end
+        end
+%         if isempty(dayToInfect)
+%             newPerson.removalDay = removalDay;
+%             newPerson.deathDay = deathDay;
+%         end
 
-            infecteds = [infecteds, newPerson];
-            nInfected = nInfected + 1 ;
-        end
-        if isempty(infected.contagent)
-            person.removalDay = removalDay;
-            person.deathDay = deathDay;
-        end
+%         [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, Re(day), day>0);
+%         if ismember(day, infected.contagent)
+% 
+%             newPerson.contagent = daysToInfect;
+%             newPerson.infectSchedule = infectSchedule;
+%             newPerson.infectionDay = day;
+%             newPerson.removalDay = removalDay;
+%             newPerson.deathDay = deathDay;
+% 
+%             infecteds = [infecteds, newPerson];
+%             nInfected = nInfected + 1 ;
+%             infectedDays = [infectedDays, day];
+%         end
+%         if isempty(infected.contagent)
+%             newPerson.removalDay = removalDay;
+%             newPerson.deathDay = deathDay;
+%         end
 
         if day >= infected.removalDay
 %             disp([day, i, length(infecteds)])
@@ -95,10 +116,12 @@ nInfected-nRemoved
 infecteds
 tholdDay
 dd = movmean(hist(deathDays, 1:220), 7);
+id = movmean(hist(infectedDays, 1:220), 7);
 yyaxis right
 plot(Re, '-'); hold on
 yyaxis left
 semilogy(is, '.-'); hold on
+semilogy(id, '.-k'); hold on
 semilogy(dd, '.-k'); hold on
 xlim([1,200])
 % plot(is/max(is), '.-'); hold on
@@ -113,13 +136,19 @@ xlim([1,200])
 % end
 % mean(dum)
 
-function [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, R)
+function [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, R, random)
     incubation = 1;
     period = 10;
     removalDay = day+period+1;
     deathDay = day+20+randi([-2,2],1,1);
-    infectSchedule = hist(randi([1,period],1,poissrnd(R)),1:period);
-    daysToInfect = day + find(rand(1,period) < R*(1/period)*ones(1,period)) + incubation;
+    if random
+        infectSchedule = hist(randi([1,period],1,poissrnd(R)),1:period);
+        daysToInfect = day + find(rand(1,period) < R*(1/period)*ones(1,period)) + incubation;
+    else
+        infectSchedule = [0,0,0,1,1,0,0,0,0,0];
+        daysToInfect = day + [4,5,6] + incubation;
+    end
+    
 %     daysToInfect = [day+1, day+2];
     
 %     range = day+incubation:day+incubation+period-1;

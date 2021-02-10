@@ -3,6 +3,9 @@ clear
 close all
 global rates;
 
+% b*a*exp(a+b*(x)-a*exp(b*(x)))+c
+% d*(1/b)*exp(-(((x-c)-a)/b)-exp(-(((x-c)-a)/b)))
+
 rates = jsondecode(fileread('data\ft_rates_new.json'));
 
 nmean = 14;

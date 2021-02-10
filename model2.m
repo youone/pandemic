@@ -18,9 +18,9 @@ infecteds(1).deathDay = deathDay;
 
 is = [];
 % Re = [];
-R0 = 2.5;
+R0 = 3;
 Rend = 0.7;
-Re = (-sigmoid(1:200,40,0.3)+1)*(R0-Rend)+Rend;
+Re = (-sigmoid(1:200,30,1)+1)*(R0-Rend)+Rend;
 
 nDays = 200;
 
@@ -31,12 +31,12 @@ infectedDays = [];
 
 tholdDay = 0;
 
-for day = 1:nDays
+for day = 1:20
 %         disp(ismember(day, infected.contagent))
 
         
     is(day) = length(infecteds);
-    disp(is(day))
+    disp([day is(day)])
 %     Re(day) = (-sigmoid(day,40,0.3)+1)*(R0-Rend)+Rend;
 
     if tholdDay == 0 && is(day)>500 && is(day) > is(day-1)
@@ -57,13 +57,13 @@ for day = 1:nDays
         if ismember(day, dayToInfect)
             for iInfect = 1:nToInfect(find(dayToInfect==day))
               newPerson = person; 
-              [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, Re(day), day>20);
+              [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, Re(day), day>0);
 %             newPerson.contagent = daysToInfect;
               newPerson.infectSchedule = infectSchedule;
               newPerson.infectionDay = day;
               newPerson.removalDay = removalDay;
               newPerson.deathDay = deathDay;
-% 
+%   
               infecteds = [infecteds, newPerson];
               nInfected = nInfected + 1 ;
               infectedDays = [infectedDays, day];
@@ -118,6 +118,7 @@ tholdDay
 dd = movmean(hist(deathDays, 1:220), 7);
 id = movmean(hist(infectedDays, 1:220), 7);
 yyaxis right
+ylim([0,3])
 plot(Re, '-'); hold on
 yyaxis left
 semilogy(is, '.-'); hold on
@@ -139,13 +140,14 @@ xlim([1,200])
 function [daysToInfect, infectSchedule, removalDay, deathDay] = infect(day, R, random)
     incubation = 1;
     period = 10;
-    removalDay = day+period+1;
+    removalDay = day+period+1+randi([-2,2],1,1);
     deathDay = day+20+randi([-2,2],1,1);
     if random
         infectSchedule = hist(randi([1,period],1,poissrnd(R)),1:period);
         daysToInfect = day + find(rand(1,period) < R*(1/period)*ones(1,period)) + incubation;
     else
-        infectSchedule = [0,0,0,1,1,0,0,0,0,0];
+        infectSchedule = hist(randi([1,period],1,ceil(R)),1:period);
+%         infectSchedule = [0,1,0,1,0,1,0,0,0,0];
         daysToInfect = day + [4,5,6] + incubation;
     end
     

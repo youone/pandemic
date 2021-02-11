@@ -59,15 +59,21 @@ end
 h = hist(infectionDay,[1:Ndays]);
 
 nCases = h;
-% nCases = movmean(h,7);
+% nCases = movmean(h,14);
 nCasesDay = (0:Ndays-1);
-% plot(nCasesDay, nCases/max(nCases), '.-'); hold on
-plot(nCasesDay, nCases, '.-'); hold on
-% plot(0:Ndays-1, nInfecteds, '.-'); hold on
+
+[curve, goodness, output] = fit(nCasesDay',nCases','smoothingspline','SmoothingParam',0.02);
+nCasesSpline = feval(curve,nCasesDay);
 
 g = fittype('a*exp(b*x)');
 f0 = fit(nCasesDay(1:20)',nCases(1:20)',g);
 nStart = f0.a;
+
+% plot(nCasesDay, nCases/max(nCases), '.-'); hold on
+plot(nCasesDay, nCases, '.-'); hold on
+plot(nCasesDay, nCasesSpline, '.-');
+% plot(0:Ndays-1, nInfecteds, '.-'); hold on
+
 
 x=[1];
 z=[1];
@@ -75,7 +81,8 @@ z=[1];
 dt=0.01;
 it=1;
 time = dt:dt:Ndays;
-Re = (-sigmoid(time,25,0.3)+1)*(exp(5*f0.b)-Rend)+Rend;
+% Re = (-sigmoid(time,25,0.3)+1)*(exp(5*f0.b)-Rend)+Rend;
+Re = (-sigmoid(time,25,0.3)+1)*(R0-Rend)+Rend;
 for t=time
     k = log(Re(it))/5;
 %     k = log(3)/5;
@@ -88,7 +95,7 @@ end
 % yyaxis right
 % grid on
 % plot([0 time],x/max(x), '-'); hold on
-plot([0 time],nStart*x, '-'); hold on
+plot([0 time],1*x, '-'); hold on
 % plot([0 time(1:1999)],z(1:2000), '.-');
 % ylabel('New Cases')
 
@@ -110,6 +117,26 @@ plot([0 time],nStart*x, '-'); hold on
 % % plot(z, '-')
 
 grid on
+
+Rspline = exp(5*diff(nCasesSpline(2:end))./(nCasesSpline(2:end-1)*1));
+dum  = interp1(nCasesDay,nCasesSpline,time);
+figure
+plot(time, exp(5*diff(x)./(x(1:end-1)*0.01))); hold on
+plot(time(1:end-1), movmean(exp(5*diff(dum)./(dum(1:end-1)*0.01)),100) );
+
+ReSpline = exp(5*diff(dum)./(dum(1:end-1)*0.01));
+z = [1];
+it=1;
+for t=time(1:end-1)
+    k = log(ReSpline(it))/5;
+%     k = log(3)/5;
+    dxdt = k*(z(it)+0.5*dt)*dt;
+    z(it+1)=z(it)+dxdt;
+    it = it+1;
+end
+
+
+
 
 nInf
 nRem

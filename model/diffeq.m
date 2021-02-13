@@ -5,7 +5,7 @@ clear
 N = 150;
 
 R0=3;
-Rend = 0.7;
+Rend = 0.9;
 % plot(Re,'.-');
 
 x=[1];
@@ -14,7 +14,7 @@ z=[1];
 dt=0.01;
 it=1;
 time = dt:dt:150;
-Re = (-sigmoid(time,36,0.2)+1)*(R0-Rend)+Rend;
+Re = (-sigmoid(time,36,0.5)+1)*(R0-Rend)+Rend;
 for t=time
     k = log(Re(it))/5;
 %     k = log(3)/5;

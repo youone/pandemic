@@ -1,18 +1,35 @@
 clc
+% clear
 close all 
 
 % websave('fohmData.xlsx', 'https://github.com/adamaltmejd/covid/blob/master/data/FHM/Folkhalsomyndigheten_Covid19_2021-02-09.xlsx?raw=true')
 
 % data = webread('https://ig.ft.com/coronavirus-chart/data.json')
-% alldata = jsondecode(fileread('worldData.json'));
-% alldata = jsondecode(fileread('..\data\ft_rates_new.json'));
-% fohmData = xlsread('fohmData.xlsx',2);
-global alldata;
-global fohmData
+%allData = jsondecode(fileread('worldData.json'));
+% allData = jsondecode(fileread('..\data\ft_rates_new.json'));
+%fohmData = xlsread('fohmData.xlsx',2);
+% load('countryData');
+% disp('loaded');
+global allData;
+global fohmData;
 
-% seData = getCountry('world','Sweden');
+countries(1) = Country('Denmark',0); hold on
+countries(1) = Country('Belgium',-2); hold on
 
-% [deaths, day] = getDeaths('world','Portugal',7,2);
+return
+
+dkData = getCountry('world','Denmark');
+itData = getCountry('world','Norway');
+beData = getCountry('world','Belgium');
+spData = getCountry('world','Spain');
+itData = getCountry('world','Italy');
+frData = getCountry('world','France');
+ukData = getCountry('world','United Kingdom');
+irData = getCountry('world','Ireland');
+auData = getCountry('world','Austria');
+neData = getCountry('world','Netherlands');
+
+% [deaths, day] = getDeaths('world','Portugal');
 deathsFoHM = fohmData(:,2);
 dayFoHM = datetime(fohmData(:,1) - min(fohmData(:,1)) + datenum('11-Mars-2020'),'ConvertFrom','datenum');
 
@@ -23,6 +40,7 @@ day = 1:length(cases);
 dayDate = dayFoHM(1:length(cases));
 [curve, goodness, output] = fit(day',cases,'smoothingspline','SmoothingParam',0.02);
 casesSpline = feval(curve, day);
+casesSpline = casesSpline-min(casesSpline)+1;
 ReSpline = exp(serialInterval*diff(casesSpline)./(casesSpline(1:end-1)*1));
 
 % x = [1.65];
@@ -61,9 +79,9 @@ sp2.Position = [0.1300    0.1100    0.7750    0.6];
 
 yyaxis left
 p1 = plot(dayDate-20, casesSpline/max(casesSpline), '-', ...
-    dayDate-20, getCases(-0.8, ReSpline, 0.9, serialInterval)/max(casesSpline), ':', ...
-    dayDate-20, getCases(-0.8, ReSpline, 0.8, serialInterval)/max(casesSpline), ':', ...
-    dayDate-20, getCases(-0.8, ReSpline, 0.7, serialInterval)/max(casesSpline), ':', ...
+    dayDate-20, getCases(0.5, ReSpline, 0.9, serialInterval)/max(casesSpline), ':', ...
+    dayDate-20, getCases(0.5, ReSpline, 0.8, serialInterval)/max(casesSpline), ':', ...
+    dayDate-20, getCases(0.5, ReSpline, 0.7, serialInterval)/max(casesSpline), ':', ...
     'linewidth',2);
 ylim([0,1.1])
 ylabel('no. new infections (normalized)')
@@ -85,6 +103,7 @@ legend([p2(1) p2(2) p1(1) p1(2)], 'deaths (data)','deaths (model)','new infectio
 % figure
 % plot(dayFoHM, movmean(deathsFoHM,7), day, movmean(deaths,7));
 
+
 function [x, ReMod]  = getCases(x0, Re, sup, serialInterval)
     ReMod = (-sigmoid(1:length(Re),28,1.0)+1)*(1-sup)+sup
     x = [x0];
@@ -101,18 +120,19 @@ end
 
 
 function country = getCountry(continent, name)
-    global alldata;
+    global allData;
     index = 1;
-    for c = {alldata.(continent).area}
+    for c = {allData.(continent).area}
         if strcmp(c{1}, name)
-            country = alldata.(continent)(index);
+            country = allData.(continent)(index);
         end
         index=index+1;
     end
+
+    [country.deaths country.days] = getDeaths(country);
 end
 
-function [deaths, day] = getDeaths(continent, name, nmean, shift)
-     country = getCountry(continent, name);
+function [deaths, day] = getDeaths(country)
 
      deaths=[];
 %      day={};

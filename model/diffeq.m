@@ -7,6 +7,7 @@ N = 150;
 R0=3;
 Rend = 0.9;
 % plot(Re,'.-');
+serial = 5;
 
 x=[1];
 z=[1];
@@ -16,11 +17,11 @@ it=1;
 time = dt:dt:150;
 Re = (-sigmoid(time,36,0.5)+1)*(R0-Rend)+Rend;
 for t=time
-    k = log(Re(it))/5;
+    k = log(Re(it))/serial;
 %     k = log(3)/5;
     dxdt = k*(x(it)+0.5*dt)*dt;
     x(it+1)=x(it)+dxdt;
-    z(it+1) = 3^(t/5);
+    z(it+1) = 3^(t/serial);
     it = it+1;
 end
 
@@ -36,4 +37,5 @@ ylabel('Reproduction Number (R_e)')
 ylim([0,3.1])
 % plot([0 time(1:1999)],z(1:2000), '.-'); hold off
 
-title('model N=R_e^{t/\tau} (no immunity)')
+xlabel('days')
+title('model N(t) ~ \int R_e^{t/\tau} (no immunity)')

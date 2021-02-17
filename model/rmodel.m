@@ -1,11 +1,11 @@
-function [n, t, Re] = rmodel(d,nstart,serial,Rstart,Rend,dRestr,scale)
+function [n, t, Re] = rmodel(d,nstart,serial,Rstart,Rend,dRestr,slope,scale)
 
 ndays = length(d);
 n=[nstart];
 dt=0.001;
-t=0:dt:ndays-dt;
+t=0:dt:ndays;
 
-Re = (-sigmoid(t,dRestr,0.3)+1)*(Rstart-Rend)+Rend;
+Re = (-sigmoid(t,dRestr,slope)+1)*(Rstart-Rend)+Rend;
 
 for it=1:length(t)-1
     k = log(Re(it))/serial;
@@ -14,8 +14,7 @@ for it=1:length(t)-1
     it = it+1;
 end
 
-
-n = scale*interp1(t,n,d)/max(n);
+n = scale*interp1(t,n,d);
 Re = interp1(t,Re,d);
 t=d;
 

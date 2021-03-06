@@ -6,7 +6,7 @@ classdef Country < handle
         dates = [];
         days = [];
         population = 0;
-        name = '';
+        name = ''; 
         nmean = 14;
         firstCaseDay = 0;
     end
@@ -22,16 +22,29 @@ classdef Country < handle
         %
         function obj = Country(name, shift)
 
+            load('countryData');
+            global allData;
+            global fohmData;
+
             if nargin == 0
                 clc
-                name = 'Denmark';
+                name = 'Belgium';
                 shift = 0;
             end
             cdata = obj.getCountry('world', name);
             obj.population = cdata.population;
             
+            obj.fitModel(shift);
+        end
+
+        
+        %
+        %
+        %
+        function fitModel = fitModel(obj,shift)
+
             selection = (obj.dates >= datetime(datenum('3-March-2020'),'ConvertFrom','datenum')) & ...
-                        (obj.dates < datetime(datenum('1-Aug-2020'),'ConvertFrom','datenum'));
+            (obj.dates < datetime(datenum('1-Aug-2020'),'ConvertFrom','datenum'));
 
             x = obj.days(selection) + shift;
             xdates = obj.dates(selection) + shift;
@@ -51,7 +64,7 @@ classdef Country < handle
 %             options.Upper = [20 ,5,inf,1   ,inf   ,inf ,inf  ,inf];
 %             options.Startpoint = [20,5,4,0.5,10,1,1,1];
 
-%%exponential                       nstart  serial  Rstart  Rend  dRestr  slope  assym  scale
+% %exponential                       nstart  serial  Rstart  Rend  dRestr  slope  assym  scale
 %             options.Lower =      [0       5       0       0     0       0      0      0];
 %             options.Upper =      [inf     5       inf     1     nan     10     nan    1];
 %             options.Startpoint = [20      5       3       0.5   30      0.1    1      0.0055];
@@ -122,7 +135,10 @@ classdef Country < handle
             legend([pl4 pl5 pl1 pl2 pl3],'Re', 'Re, supressed', 'data', 'model, fitted to data', 'model, supressed')
             
             6000*sum(nAlt)/sum(y)
+
+        
         end
+
         
         %
         %

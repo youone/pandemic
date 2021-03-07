@@ -23,8 +23,8 @@ classdef Country < handle
         function obj = Country(name, shift)
 
 %             load('..\countryData');
-%             global allData;
-%             global fohmData;
+            global allData;
+            global fohmData;
 
             if nargin == 0
                 clc

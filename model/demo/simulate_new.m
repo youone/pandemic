@@ -2,11 +2,11 @@
 clear
 clc
 
-Ndays = 200;
+Ndays = 10;
 
 R0 = 3;
 Rend = 0.7;
-N0 = 1;
+N0 = 10;
 
 nInfecteds = [N0];
 infecteds = [];
@@ -25,12 +25,12 @@ for i=1:N0
 end
 
 index = index + 1;
-Rrestr = 20;
+Rrestr = 10;
 slope = 0.3;
 slope2 = 0.5;
 
 % [nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,0.3,0);
-[nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,slope,slope2);
+[nCasesMod, Re] = iModel(1:Ndays,10,5,R0,Rend,Rrestr,slope,slope2);
 
 % Re = Re_sigmoid(1:Ndays,R0,Rend,Rrestr,0.3,0);
 % Re = Re_exponential(1:Ndays,R0,Rend,Rrestr,0.5,0);
@@ -69,31 +69,31 @@ for day = 1:Ndays
     end
 end
 
-h = hist(infectionDay,[1:Ndays]);
+h = hist(infectionDay,[0:Ndays-1]);
 
 nCases = h;
 % nCases = movmean(h,7);
 nCasesDay = (1:Ndays);
 
 
-% ft = fittype('n0*3^(x/tau)');
-ft = fittype('iModel(x,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)');
-options = fitoptions(ft);
-% options.Lower =      [N0,5,R0,Rend,Rrestr,0.3,0.5];
-% options.Upper =      [N0,5,R0,Rend,Rrestr,0.3,0.5];
-options.Lower =      [0,  5,R0,Rend,0,0,  0];
-options.Upper =      [inf,5,R0,Rend,inf,inf,inf];
-options.Startpoint = [N0, 5,R0,Rend,Rrestr,slope,slope2];
-f = fit( nCasesDay', nCases', ft, options)
-
-
-% ft = fittype('n0*3^(x/tau)');
+% % ft = fittype('n0*3^(x/tau)');
+% ft = fittype('iModel(x,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)');
 % options = fitoptions(ft);
-% options.Lower = [0 5];%[N0,5,R0,Rend,Rrestr-10,max(nCases)];
-% options.Upper = [inf 5];%[N0,5,R0,Rend,Rrestr+10,max(nCases)];
-% options.Startpoint = [1,5];%[N0,5,R0,Rend,Rrestr,max(nCases)];
+% % options.Lower =      [N0,5,R0,Rend,Rrestr,0.3,0.5];
+% % options.Upper =      [N0,5,R0,Rend,Rrestr,0.3,0.5];
+% options.Lower =      [0,  5,R0,Rend,0,0,  0];
+% options.Upper =      [inf,5,R0,Rend,inf,inf,inf];
+% options.Startpoint = [N0, 5,R0,Rend,Rrestr,slope,slope2];
 % f = fit( nCasesDay', nCases', ft, options)
-
+% 
+% 
+% % ft = fittype('n0*3^(x/tau)');
+% % options = fitoptions(ft);
+% % options.Lower = [0 5];%[N0,5,R0,Rend,Rrestr-10,max(nCases)];
+% % options.Upper = [inf 5];%[N0,5,R0,Rend,Rrestr+10,max(nCases)];
+% % options.Startpoint = [1,5];%[N0,5,R0,Rend,Rrestr,max(nCases)];
+% % f = fit( nCasesDay', nCases', ft, options)
+% 
 
 
 % [n,t,Re]=rmodel(1:Ndays,N0,5,R0,Rend,Rrestr,max(nCases));
@@ -110,11 +110,14 @@ f = fit( nCasesDay', nCases', ft, options)
 % plot(nCasesDay-1, max(n)*nCases/max(nCases), '.-')
 % plot(nCasesDay, nCases, '.-r', nCasesDay, feval(f,nCasesDay)); hold on
 
-[~, fittedData, Re] = dModel(nCasesDay,f.a_n0,f.b_tau,f.c_Rstart,f.d_Rend,f.e_tOnset,f.f_slope,f.g_slope2);
+% [~, fittedData, Re] = dModel(nCasesDay,f.a_n0,f.b_tau,f.c_Rstart,f.d_Rend,f.e_tOnset,f.f_slope,f.g_slope2);
 
-yyaxis left
-plot(nCasesDay, nCases, '.-',nCasesDay, nCasesMod, '.-',nCasesDay,fittedData,'.-'); hold on
+% yyaxis left
+% subplot(211)
+% plot(nCasesDay, cumsum(nCases), '.-', nCasesDay, cumsum(nCasesMod), '.-'); hold off
+% subplot(212)
+plot(nCasesDay, (nCases), '.-', nCasesDay, (nCasesMod), '.-'); hold off
 % plot(nCasesDay, nCases, '.-',nCasesDay,feval(f,nCasesDay),'.-');
 
-yyaxis right
-plot(nCasesDay,Re,'.-')
+% yyaxis right
+% plot(nCasesDay,Re,'.-')

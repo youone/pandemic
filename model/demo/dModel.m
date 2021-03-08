@@ -21,7 +21,7 @@ function [nDeathsDist, n, Re] = dModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_s
     end
     
     t=t(:);
-    deathPdf = lognpdf(1:40,log(20),0.1)';
+    deathPdf = lognpdf(1:40,log(20),0.2)';
     nDeathsDist = zeros(N,1);
     for nd = t'
         if (nd < N-38) 

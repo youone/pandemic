@@ -1,11 +1,12 @@
-function [n,Re] = model(t,n0,tau,Rstart,Rend,tOnset,slope)
+function [n,Re] = model(t,n0,tau,Rstart,Rend,tOnset,slope,slope2)
 
     N = length(t);
     n = zeros(1,N);
 
     % Re = 3*ones(size(n));
 %     Re = Re_step(t,Rstart,Rend,tOnset,slope);
-    Re = Re_exponential(t,Rstart,Rend,tOnset,slope);
+%     Re = Re_exponential(t,Rstart,Rend,tOnset,slope,0);
+    Re = Re_genlog(t,Rend,Rstart,tOnset,slope,slope2);
 
     n(1) = n0;
     for i=1:length(n)-1

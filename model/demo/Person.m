@@ -39,7 +39,7 @@ classdef Person < handle
 %             obj.infectSchedule = [obj.infectSchedule (day + 5*ones(1,obj.nInfections))];
             for i = 1:obj.nInfections
                 dayToInfect = poissrnd(5,1,1);
-%                 dayToInfect = randi([5,5],1,1);
+%                  dayToInfect = randi([1,9],1,1);
                 obj.infectSchedule = [obj.infectSchedule (day + dayToInfect)];
             end
             

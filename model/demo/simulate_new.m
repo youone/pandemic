@@ -2,10 +2,10 @@
 clear
 clc
 
-Ndays = 10;
+Ndays = 20;
 
 R0 = 3;
-Rend = 0.7;
+Rend = 3;
 N0 = 10;
 
 nInfecteds = [N0];
@@ -14,7 +14,14 @@ infectionDay = [];
 nInf = 0;
 nRem = 0;
 
+Rrestr = 10;
+slope = 0.3;
+slope2 = 0.5;
+
 disp(['DAY .... : ' num2str(0) ]);
+
+% [nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,0.3,0);
+[nCasesMod, Re] = iModel(1:Ndays,10,5,R0,Rend,Rrestr,slope,slope2);
 
 index = 1;
 for i=1:N0
@@ -25,12 +32,7 @@ for i=1:N0
 end
 
 index = index + 1;
-Rrestr = 10;
-slope = 0.3;
-slope2 = 0.5;
 
-% [nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,0.3,0);
-[nCasesMod, Re] = iModel(1:Ndays,10,5,R0,Rend,Rrestr,slope,slope2);
 
 % Re = Re_sigmoid(1:Ndays,R0,Rend,Rrestr,0.3,0);
 % Re = Re_exponential(1:Ndays,R0,Rend,Rrestr,0.5,0);
@@ -85,15 +87,15 @@ nCasesDay = (1:Ndays);
 % options.Upper =      [inf,5,R0,Rend,inf,inf,inf];
 % options.Startpoint = [N0, 5,R0,Rend,Rrestr,slope,slope2];
 % f = fit( nCasesDay', nCases', ft, options)
-% 
-% 
-% % ft = fittype('n0*3^(x/tau)');
-% % options = fitoptions(ft);
-% % options.Lower = [0 5];%[N0,5,R0,Rend,Rrestr-10,max(nCases)];
-% % options.Upper = [inf 5];%[N0,5,R0,Rend,Rrestr+10,max(nCases)];
-% % options.Startpoint = [1,5];%[N0,5,R0,Rend,Rrestr,max(nCases)];
-% % f = fit( nCasesDay', nCases', ft, options)
-% 
+
+
+ft = fittype('n0*exp(log(r)*x/tau)');
+options = fitoptions(ft);
+options.Lower = [0 0 5];%[N0,5,R0,Rend,Rrestr-10,max(nCases)];
+options.Upper = [inf 3 5];%[N0,5,R0,Rend,Rrestr+10,max(nCases)];
+options.Startpoint = [N0/5 3 5];%[N0,5,R0,Rend,Rrestr,max(nCases)];
+f = fit( nCasesDay(1:end-1)', nCases(1:end-1)', ft, options)
+
 
 
 % [n,t,Re]=rmodel(1:Ndays,N0,5,R0,Rend,Rrestr,max(nCases));
@@ -116,7 +118,8 @@ nCasesDay = (1:Ndays);
 % subplot(211)
 % plot(nCasesDay, cumsum(nCases), '.-', nCasesDay, cumsum(nCasesMod), '.-'); hold off
 % subplot(212)
-plot(nCasesDay, (nCases), '.-', nCasesDay, (nCasesMod), '.-'); hold off
+% plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay, (nCasesMod), '.-'); hold off
+plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay,feval(f,nCasesDay),'.-'); hold off
 % plot(nCasesDay, nCases, '.-',nCasesDay,feval(f,nCasesDay),'.-');
 
 % yyaxis right

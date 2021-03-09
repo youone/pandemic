@@ -8,12 +8,23 @@ classdef Person < handle
         removalDay = 0;
         nInfections = 0;
         suceptible = 1;
+        R = 0;
     end
     
     methods
         
-        function obj = Person(day, R, infecter, idx)
+        function obj = Person(day, R, infecter, idx, Re)
+            obj.R = R;
             obj.index = idx;
+            
+            try
+% %                 Re(day:day+10)*(poisspdf(1,0:10)')
+% %                 disp([R mean(Re(day:day+3)) Re(day:day+20)*(poisspdf(5,0:20)')]);
+                R = mean(Re(day:day+3));
+% %                    R=Re(day:day+20)*(poisspdf(1,0:20)');
+            catch e
+                
+            end
             
             period = 10;
             obj.infectionDay = day;
@@ -34,14 +45,15 @@ classdef Person < handle
                 end
             end
             
-            
+%             poissrnd(5,1,obj.nInfections)
+            obj.infectSchedule = [obj.infectSchedule (day + poissrnd(5,1,obj.nInfections))];
 %             obj.infectSchedule = [obj.infectSchedule (day + [5,5,5])];
 %             obj.infectSchedule = [obj.infectSchedule (day + 5*ones(1,obj.nInfections))];
-            for i = 1:obj.nInfections
-                dayToInfect = poissrnd(5,1,1);
-%                  dayToInfect = randi([1,9],1,1);
-                obj.infectSchedule = [obj.infectSchedule (day + dayToInfect)];
-            end
+%             for i = 1:obj.nInfections
+%                 dayToInfect = poissrnd(5,1,1);
+% %                  dayToInfect = randi([1,9],1,1);
+%                 obj.infectSchedule = [obj.infectSchedule (day + dayToInfect)];
+%             end
             
 %             fprintf('person %i infected by %i, infects %i on days%g', idx, infecter, obj.nInfections)
 %             fprintf(' %g', obj.infectSchedule)

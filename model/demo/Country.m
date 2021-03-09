@@ -22,6 +22,7 @@ classdef Country < handle
         %
         function obj = Country(name, shift)
 
+            obj.name = name;
 %             load('..\countryData');
             global allData;
             global fohmData;

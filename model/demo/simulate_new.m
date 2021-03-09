@@ -1,12 +1,12 @@
 % close all
-clear
+% clear
 clc
 
-Ndays = 20;
+Ndays = 70;
 
 R0 = 3;
-Rend = 3;
-N0 = 10;
+Rend = 0.7;
+N0 = 3;
 
 nInfecteds = [N0];
 infecteds = [];
@@ -14,18 +14,21 @@ infectionDay = [];
 nInf = 0;
 nRem = 0;
 
-Rrestr = 10;
-slope = 0.3;
+Rrestr = 20;
+slope = 0.5;
 slope2 = 0.5;
+
+
+
 
 disp(['DAY .... : ' num2str(0) ]);
 
 % [nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,0.3,0);
-[nCasesMod, Re] = iModel(1:Ndays,10,5,R0,Rend,Rrestr,slope,slope2);
+[nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,slope,slope2);
 
 index = 1;
 for i=1:N0
-    patientZero = Person(0, R0, -1, index);
+    patientZero = Person(0, R0, -1, index, Re);
     nInf = nInf +1;
     infecteds = [infecteds patientZero];
     infectionDay = [infectionDay 0];
@@ -54,7 +57,7 @@ for day = 1:Ndays
         
         for daysToInfectDay = infected.infectSchedule
             if day == daysToInfectDay
-                newInfected = Person(day, Re(day), infected.index, index);
+                newInfected = Person(day, Re(day), infected.index, index, Re);
                 nInf = nInf +1;
                 index = index + 1;
                 infecteds = [infecteds newInfected];
@@ -118,9 +121,16 @@ f = fit( nCasesDay(1:end-1)', nCases(1:end-1)', ft, options)
 % subplot(211)
 % plot(nCasesDay, cumsum(nCases), '.-', nCasesDay, cumsum(nCasesMod), '.-'); hold off
 % subplot(212)
-% plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay, (nCasesMod), '.-'); hold off
-plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay,feval(f,nCasesDay),'.-'); hold off
+plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay, (nCasesMod), '.-'); hold off
+% plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay,feval(f,nCasesDay),'.-'); hold off
 % plot(nCasesDay, nCases, '.-',nCasesDay,feval(f,nCasesDay),'.-');
 
 % yyaxis right
 % plot(nCasesDay,Re,'.-')
+
+if (f.n0 < 5)
+    fmean = fmean + f.n0;
+    nmean = nmean + 1;
+    fmean/nmean
+end
+

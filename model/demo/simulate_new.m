@@ -6,7 +6,7 @@ Ndays = 70;
 
 R0 = 3;
 Rend = 0.7;
-N0 = 3;
+N0 = 1;
 
 nInfecteds = [N0];
 infecteds = [];
@@ -24,7 +24,7 @@ slope2 = 0.5;
 disp(['DAY .... : ' num2str(0) ]);
 
 % [nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,0.3,0);
-[nCasesMod, Re] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,slope,slope2);
+[nCasesMod, Re, nTotCases] = iModel(1:Ndays,1,5,R0,Rend,Rrestr,slope,slope2);
 
 index = 1;
 for i=1:N0
@@ -128,9 +128,9 @@ plot(nCasesDay(1:end-1), (nCases(1:end-1)), '.-', nCasesDay, (nCasesMod), '.-');
 % yyaxis right
 % plot(nCasesDay,Re,'.-')
 
-if (f.n0 < 5)
-    fmean = fmean + f.n0;
-    nmean = nmean + 1;
-    fmean/nmean
-end
+% if (f.n0 < 5)
+%     fmean = fmean + f.n0;
+%     nmean = nmean + 1;
+%     fmean/nmean
+% end
 

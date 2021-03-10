@@ -1,9 +1,9 @@
-function [nDeathsDist, n, Re] = dModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)
+function [nDeseased, nNewCases, Re, nCases] = dModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)
 
     global rmodel
 
     N = length(t);
-    n = zeros(N,1);
+    nCases = zeros(N,1);
     b_tau = 5;
 
     try
@@ -15,22 +15,21 @@ function [nDeathsDist, n, Re] = dModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_s
         Re = Re_genlog(t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
     end
     
-    n(1) = a_n0;
-    for i=1:length(n)-1
-        n(i+1) = exp(log(Re(i))/b_tau + log(n(i))); 
+    nCases(1) = a_n0;
+    for i=1:length(nCases)-1
+        nCases(i+1) = nCases(i)*(exp(log(Re(i))/b_tau)); 
+%         nCases(i+1) = exp(log(Re(i))/b_tau + log(nCases(i))); 
     end
     
+    nNewCases = nCases*(c_Rstart^(1/b_tau)-1);
+
     t=t(:);
     deathPdf = lognpdf(1:40,log(20),0.2)';
-    nDeathsDist = zeros(N,1);
+    nDeseased = zeros(N,1);
     for nd = t'
         if (nd < N-38) 
-            nDeathsDist(nd:nd+40-1) = nDeathsDist(nd:nd+40-1) + 0.01*n(nd)*deathPdf;
-%         else
-%             nLeft = N - nd
-%             nd:nd+nLeft
-%              nDeathsDist(nd:nd+nLeft)
-%             nDeathsDist(nd:nd+nLeft) = nDeathsDist(nd:nd+nLeft) + 0.01*n(nd)*deathPdf(1:nLeft+1);
+            nDeseased(nd:nd+40-1) = nDeseased(nd:nd+40-1) + 0.01*nNewCases(nd)*deathPdf;
         end
     end
+    
 end

@@ -31,6 +31,7 @@ classdef Country < handle
                 obj.name = 'Belgium';
                 shift = 0;
             end
+            obj.name = name;
             cdata = obj.getCountry('world', obj.name);
             obj.population = cdata.population;
             

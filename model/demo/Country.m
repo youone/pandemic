@@ -22,17 +22,16 @@ classdef Country < handle
         %
         function obj = Country(name, shift)
 
-            obj.name = name;
 %             load('..\countryData');
             global allData;
             global fohmData;
 
             if nargin == 0
                 clc
-                name = 'Belgium';
+                obj.name = 'Belgium';
                 shift = 0;
             end
-            cdata = obj.getCountry('world', name);
+            cdata = obj.getCountry('world', obj.name);
             obj.population = cdata.population;
             
 %             obj.fitModel(shift);

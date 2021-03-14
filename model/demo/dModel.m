@@ -9,10 +9,10 @@ function [nDeseased, nNewCases, Re, nCases] = dModel(t,a_n0,b_tau,c_Rstart,d_Ren
     try
         Re = feval(['Re_' rmodel], t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
     catch
-%         Re = Re_sigmoid(t,c_Rstart,d_Rend,e_tOnset,f_slope);
+         Re = Re_sigmoid(t,c_Rstart,d_Rend,e_tOnset,f_slope);
 %         Re = Re_step(t,c_Rstart,d_Rend,e_tOnset,f_slope);
 %         Re = Re_exponential(t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
-        Re = Re_genlog(t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
+%        Re = Re_genlog(t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
     end
     
     nCases(1) = a_n0;

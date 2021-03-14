@@ -45,15 +45,15 @@ classdef Person < handle
                 end
             end
             
-%             poissrnd(5,1,obj.nInfections)
             obj.infectSchedule = [obj.infectSchedule (day + poissrnd(5,1,obj.nInfections))];
-%             obj.infectSchedule = [obj.infectSchedule (day + [5,5,5])];
-%             obj.infectSchedule = [obj.infectSchedule (day + 5*ones(1,obj.nInfections))];
 %             for i = 1:obj.nInfections
-%                 dayToInfect = poissrnd(5,1,1);
-% %                  dayToInfect = randi([1,9],1,1);
+% %                 dayToInfect = poissrnd(5,1,1);
+%                  dayToInfect = randi([4,6],1,1);
 %                 obj.infectSchedule = [obj.infectSchedule (day + dayToInfect)];
 %             end
+
+            %             obj.infectSchedule = [obj.infectSchedule (day + [5,5,5])];
+%             obj.infectSchedule = [obj.infectSchedule (day + 5*ones(1,obj.nInfections))];
             
 %             fprintf('person %i infected by %i, infects %i on days%g', idx, infecter, obj.nInfections)
 %             fprintf(' %g', obj.infectSchedule)

@@ -5,8 +5,10 @@ function [nNewCases, Re, nCases] = iModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,
 
     try
         global rmodel
+        disp(['GLOBAL ' rmodel])
         Re = feval(['Re_' rmodel], t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
     catch
+        disp(['DEFAULT sigmoid'])
         Re = Re_sigmoid(t,c_Rstart,d_Rend,e_tOnset,f_slope);
 %         Re = Re_step(t,c_Rstart,d_Rend,e_tOnset,f_slope);
 %         Re = Re_exponential(t,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
@@ -22,3 +24,7 @@ function [nNewCases, Re, nCases] = iModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,
     nNewCases = nCases*(c_Rstart^(1/b_tau)-1);
 
 end
+
+
+
+

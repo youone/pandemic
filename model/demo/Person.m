@@ -5,7 +5,6 @@ classdef Person < handle
         index = 0;
         infectionDay = 0;
         deathDay = 0;
-        removalDay = 0;
         nInfections = 0;
         suceptible = 1;
         R = 0;
@@ -16,27 +15,15 @@ classdef Person < handle
         function obj = Person(day, R, infecter, idx, Re)
             obj.R = R;
             obj.index = idx;
-            
+            obj.infectionDay = day;
+
+            % use future R 
             try
-% %                 Re(day:day+10)*(poisspdf(1,0:10)')
-% %                 disp([R mean(Re(day:day+3)) Re(day:day+20)*(poisspdf(5,0:20)')]);
                 R = mean(Re(day:day+3));
-% %                    R=Re(day:day+20)*(poisspdf(1,0:20)');
-            catch e
-                
+            catch
             end
             
-            period = 10;
-            obj.infectionDay = day;
-            obj.removalDay = day+period;
-            %             obj.removalDay = day+period+randi([-2,2],1,1);
-            %             obj.deathDay = day+20+randi([-2,2],1,1);
-            
-            %            obj.nInfections = 3;
-            %            obj.nInfections = R;
-            
             if (R>1)
-%                 obj.nInfections = 3;
                 obj.nInfections = poissrnd(R);
             else
                 obj.nInfections = 0;
@@ -52,12 +39,12 @@ classdef Person < handle
 %                 obj.infectSchedule = [obj.infectSchedule (day + dayToInfect)];
 %             end
 
-            %             obj.infectSchedule = [obj.infectSchedule (day + [5,5,5])];
-%             obj.infectSchedule = [obj.infectSchedule (day + 5*ones(1,obj.nInfections))];
-            
-%             fprintf('person %i infected by %i, infects %i on days%g', idx, infecter, obj.nInfections)
-%             fprintf(' %g', obj.infectSchedule)
-%             fprintf('\n')
+            if day==0
+                newInfectSchedule = obj.infectSchedule - poissrnd(5,1,1);
+                obj.infectSchedule = newInfectSchedule(newInfectSchedule>0);
+                obj.nInfections = length(obj.infectSchedule);
+            end
+
         end
         
     end

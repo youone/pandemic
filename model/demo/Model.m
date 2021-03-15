@@ -52,6 +52,8 @@ classdef Model < matlab.mixin.Copyable
                 obj.infectionFatalityRatio...
                 );
             obj.zeroCross = obj.zeroCrossing(obj.re-1);
+            obj.newInfecteds(1:10)
+            cumsum(obj.newInfecteds(1:10))
 %             plot(diff(diff(obj.newInfecteds)))
             
         end
@@ -64,7 +66,6 @@ classdef Model < matlab.mixin.Copyable
             infectionDay = [];
             infectionHist = zeros(size(obj.day));
             deceasedHist = zeros(size(obj.day));
-            nInf = 0;
             nRem = 0;
 
             simStatusMessage = '';
@@ -74,7 +75,7 @@ classdef Model < matlab.mixin.Copyable
                 patientZero = Person(0, obj.rStart, -1, index, obj.re);
                 
                 simStatusMessage = [simStatusMessage, ...
-                    sprintf('day %03i: person %4i infected by    X and infects %i others on days ',...
+                    sprintf('day %03i: person %04i infected by    X and infects %i others on days ',...
                     0, ...
                     index, ...
                     patientZero.nInfections),...
@@ -82,7 +83,6 @@ classdef Model < matlab.mixin.Copyable
                     sprintf('\n')
                     ];
                 
-                nInf = nInf +1;
                 index = index + 1;
                 infecteds = [infecteds patientZero];
                 infectionDay = [infectionDay 0];
@@ -106,7 +106,7 @@ classdef Model < matlab.mixin.Copyable
                             newInfected = Person(day, Rmodified, infected.index, index, obj.re);
                             
                             simStatusMessage = [simStatusMessage, ...
-                                sprintf('day %03i: person %4i infected by %4i and infects %i others on days ',...
+                                sprintf('day %03i: person %04i infected by %04i and infects %i others on days ',...
                                 day, ...
                                 index, ...
                                 infected.index,...
@@ -115,7 +115,6 @@ classdef Model < matlab.mixin.Copyable
                                 sprintf('\n')
                                 ];
                             
-                            nInf = nInf +1;
                             index = index + 1;
                             infecteds = [infecteds newInfected];
                             infectionDay = [infectionDay day];
@@ -129,13 +128,15 @@ classdef Model < matlab.mixin.Copyable
                         end
                     end
                     
-                    if day >= infected.removalDay
+%                     if day >= infected.removalDay
+                    if day >= max(infected.infectSchedule)
                         infected.suceptible = 0;
                         nRem = nRem + 1;
                     end
                     iInfected = iInfected + 1;
                 end
                 
+%                 simStatusMessage = [simStatusMessage, sprintf('day %03i summary: %i persons infected\n', day, index)];
                 updatecallback(simStatusMessage, infectionHist, deceasedHist);
                 
             end
@@ -171,8 +172,8 @@ classdef Model < matlab.mixin.Copyable
             obj.deceasedUpper = predictionConfidence(:,1);
             obj.deceasedLower = predictionConfidence(:,2);
 
-            fu = fit(obj.day(:), obj.deceasedUpper, fitModel, fitOptions)
-            fl = fit(obj.day(:), obj.deceasedLower, fitModel, fitOptions)
+            fu = fit(obj.day(:), obj.deceasedUpper, fitModel, fitOptions);
+            fl = fit(obj.day(:), obj.deceasedLower, fitModel, fitOptions);
             obj.reUpper = Model.reSeries(obj.day(:),fu.c_Rstart, fu.d_Rend, fu.e_tOnset, fu.f_slope, fu.g_slope2);
             obj.reLower = Model.reSeries(obj.day(:),fl.c_Rstart, fl.d_Rend, fl.e_tOnset, fl.f_slope, fl.g_slope2);
             
@@ -208,6 +209,7 @@ classdef Model < matlab.mixin.Copyable
         end
         
         function [nNewInfecteds, nInfecteds, Re] = infectModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)
+
             nInfecteds = zeros(size(t));
             Re = Model.reSeries(t, c_Rstart, d_Rend, e_tOnset, f_slope, g_slope2);
             nInfecteds(1) = a_n0;

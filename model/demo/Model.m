@@ -10,7 +10,7 @@ classdef Model < matlab.mixin.Copyable
         rEnd = 0.7;
         rSlope = 0.5;
         rSlope2 = 0.5;
-        rOnset = 20;
+        rOnset = 18;
         dDelay = 20;
         dVariance = 0.2;
         infectionFatalityRatio = 0.01;
@@ -18,9 +18,13 @@ classdef Model < matlab.mixin.Copyable
         day = [];
         date = [];
         re = [];
+        reUpper = [];
+        reLower = [];
         infecteds = [];
         newInfecteds = [];
         deceased = [];
+        deceasedUpper = [];
+        deceasedLower = [];
         fitData = [];
     end
     
@@ -48,6 +52,8 @@ classdef Model < matlab.mixin.Copyable
                 obj.infectionFatalityRatio...
                 );
             obj.zeroCross = obj.zeroCrossing(obj.re-1);
+%             plot(diff(diff(obj.newInfecteds)))
+            
         end
         
         function simulate(obj, nGenerations, updatecallback)
@@ -144,11 +150,11 @@ classdef Model < matlab.mixin.Copyable
             fitLimits = [
                 [obj.n0 0 inf];
                 [obj.serialInterval obj.serialInterval obj.serialInterval];
-                [obj.rStart 0 inf];
+                [obj.rStart 0 5];
                 [obj.rEnd 0 1];
                 [obj.rOnset obj.rOnset obj.rOnset];
                 [obj.rSlope 0 inf];
-                [0 0 0];
+                [obj.rSlope2 obj.rSlope2 obj.rSlope2];
                 [obj.dDelay obj.dDelay obj.dDelay];
                 [obj.dVariance obj.dVariance obj.dVariance];
                 [obj.infectionFatalityRatio obj.infectionFatalityRatio obj.infectionFatalityRatio]
@@ -159,23 +165,37 @@ classdef Model < matlab.mixin.Copyable
             fitOptions.Startpoint = fitLimits(:,1);
             
             fitResult = fit(obj.day(:), obj.fitData(:), fitModel, fitOptions)
-            obj.n0 = fitResult.a_n0;
+
+            predictionConfidence = predint(fitResult,obj.day,0.95,'functional','off');
+%             parameterConfidence = confint(fitResult);
+            obj.deceasedUpper = predictionConfidence(:,1);
+            obj.deceasedLower = predictionConfidence(:,2);
+
+            fu = fit(obj.day(:), obj.deceasedUpper, fitModel, fitOptions)
+            fl = fit(obj.day(:), obj.deceasedLower, fitModel, fitOptions)
+            obj.reUpper = Model.reSeries(obj.day(:),fu.c_Rstart, fu.d_Rend, fu.e_tOnset, fu.f_slope, fu.g_slope2);
+            obj.reLower = Model.reSeries(obj.day(:),fl.c_Rstart, fl.d_Rend, fl.e_tOnset, fl.f_slope, fl.g_slope2);
+            
             obj.serialInterval = fitResult.b_tau;
+            obj.rOnset = fitResult.e_tOnset;
+            obj.n0 = fitResult.a_n0;
             obj.rStart = fitResult.c_Rstart;
             obj.rEnd = fitResult.d_Rend;
-            obj.rOnset = fitResult.e_tOnset;
             obj.rSlope = fitResult.f_slope;
-            %             obj.deceased = feval(fitResult, obj.day);
             
             obj.update()
+
+            plot(predictionConfidence(:,2)'); hold on
+            plot(predictionConfidence(:,1)'); hold on
+            plot(obj.deceased); hold off
+            
         end
         
     end
     
     methods(Static)
         
-        function [nNewInfecteds, nInfecteds, Re] = infectModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)
-            nInfecteds = zeros(size(t));
+        function Re = reSeries(t, c_Rstart, d_Rend, e_tOnset, f_slope, g_slope2)
             global reModel
             try
                 %                 disp(['GLOBAL ' reModel])
@@ -185,6 +205,11 @@ classdef Model < matlab.mixin.Copyable
                 disp(['DEFAULT sigmoid'])
                 Re = Re_sigmoid(t,c_Rstart,d_Rend,e_tOnset,f_slope);
             end
+        end
+        
+        function [nNewInfecteds, nInfecteds, Re] = infectModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2)
+            nInfecteds = zeros(size(t));
+            Re = Model.reSeries(t, c_Rstart, d_Rend, e_tOnset, f_slope, g_slope2);
             nInfecteds(1) = a_n0;
             for i=1:length(nInfecteds)-1
                 nInfecteds(i+1) = nInfecteds(i)*(exp(log(Re(i))/b_tau));
@@ -200,16 +225,20 @@ classdef Model < matlab.mixin.Copyable
             N = length(t);
             [nNewInfecteds, nInfecteds, Re] = Model.infectModel(t,a_n0,b_tau,c_Rstart,d_Rend,e_tOnset,f_slope,g_slope2);
             t=t(:);
-            deathPdf = lognpdf(1:40, log(h_dDelay), i_dVariance)';
-            nDeseased = zeros(N,1);
-            for nd = 1:length(t)
-                if (nd < N-38)
-                    nDeseased(nd:nd+40-1) = nDeseased(nd:nd+40-1) + j_ifr * nNewInfecteds(nd)*deathPdf;
-                else
-                    nLeft = N - nd;
-                    nDeseased(nd:nd+nLeft) = nDeseased(nd:nd+nLeft) + 0.01*nNewInfecteds(nd)*deathPdf(1:nLeft+1);
-                end
-            end
+%             deathPdf = normpdf(1:length(t), h_dDelay, 5)';
+            deathPdf = lognpdf(1:length(t), log(h_dDelay), i_dVariance)';
+            nDeseased = 0.01*conv(deathPdf, nNewInfecteds);
+            nDeseased = nDeseased(1:length(t));
+
+%             nDeseased = zeros(N,1);
+%             for nd = 1:length(t)
+%                 if (nd < N-38)
+%                     nDeseased(nd:nd+40-1) = nDeseased(nd:nd+40-1) + j_ifr * nNewInfecteds(nd)*deathPdf;
+%                 else
+%                     nLeft = N - nd;
+%                     nDeseased(nd:nd+nLeft) = nDeseased(nd:nd+nLeft) + 0.01*nNewInfecteds(nd)*deathPdf(1:nLeft+1);
+%                 end
+%             end
         end
         
         function result = zeroCrossing(y)

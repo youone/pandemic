@@ -53,8 +53,8 @@ classdef Model < matlab.mixin.Copyable
                 obj.infectionFatalityRatio...
                 );
             obj.zeroCross = obj.zeroCrossing(obj.re-1);
-            obj.newInfecteds(1:10)
-            cumsum(obj.newInfecteds(1:10))
+%             obj.newInfecteds(1:10)
+%             cumsum(obj.newInfecteds(1:10))
 %             plot(diff(diff(obj.newInfecteds)))
             
         end

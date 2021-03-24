@@ -7,6 +7,7 @@ global rates;
 % d*(1/b)*exp(-(((x-c)-a)/b)-exp(-(((x-c)-a)/b)))
 
 rates = jsondecode(fileread('data\ft_rates_new.json'));
+% rates = jsondecode(fileread('data\worldData.json'));
 
 nmean = 14;
 

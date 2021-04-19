@@ -23,14 +23,15 @@ classdef Person < handle
             catch
             end
             
-            if (R>1)
-                obj.nInfections = poissrnd(R);
-            else
-                obj.nInfections = 0;
-                if rand(1,1)<R
-                    obj.nInfections=1;
-                end
-            end
+            obj.nInfections = poissrnd(R);
+%             if (R>1)
+%                 obj.nInfections = poissrnd(R);
+%             else
+%                 obj.nInfections = 0;
+%                 if rand(1,1)<R
+%                     obj.nInfections=1;
+%                 end
+%             end
             
             obj.infectSchedule = [obj.infectSchedule (day + poissrnd(5,1,obj.nInfections))];
 %             for i = 1:obj.nInfections

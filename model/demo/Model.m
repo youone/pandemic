@@ -152,7 +152,7 @@ classdef Model < matlab.mixin.Copyable
             fitLimits = [
                 [obj.n0 0 inf];
                 [obj.serialInterval obj.serialInterval obj.serialInterval];
-                [obj.rStart iff(obj.rStartLock, obj.rStart, 0) iff(obj.rStartLock, obj.rStart, 5)];
+                [obj.rStart  (obj.rStartLock, obj.rStart, 0) iff(obj.rStartLock, obj.rStart, 5)];
                 [obj.rEnd 0 1];
                 [obj.rOnset obj.rOnset obj.rOnset];
                 [obj.rSlope 0 inf];
@@ -218,6 +218,7 @@ classdef Model < matlab.mixin.Copyable
                 nInfecteds(i+1) = nInfecteds(i)*(exp(log(Re(i))/b_tau));
             end
             nNewInfecteds = nInfecteds*(c_Rstart^(1/b_tau)-1);
+%             nNewInfecteds = nInfecteds;
             if (c_Rstart < 1)
 %                 nNewInfecteds = nInfecteds;
                 nNewInfecteds = -nNewInfecteds;

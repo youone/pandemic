@@ -23,18 +23,19 @@ ylim([0,120])
 xlim([0,365])
 files = dir('data');
 % for i = 10:40
-filename = 'fohmdata_movie.gif';
+filename = 'fohmdata_movie_w1.gif';
 
-start = 175;
+start = 10;
 % for i = 10:20
-for i = start:length(files)
+% for i = start:length(files)
+for i = 10:150
     try
 %     ['data/' files(i).name]
         data = xlsread(['data/' files(i).name],2);
 %         min(data(:,1))
         plot(data(:,1)-43901, movmean(data(:,2),1),'.-');
         ylim([0,120])
-        xlim([200,420])
+        xlim([0,200])
 %         xlim([min(data(:,1)),max(data(:,1))])
         title(['FoHM data ' files(i).name(10:19)], 'Interpreter', 'none')
         set(gca,'XTickLabel',[]);

@@ -152,7 +152,7 @@ classdef Model < matlab.mixin.Copyable
             fitLimits = [
                 [obj.n0 0 inf];
                 [obj.serialInterval obj.serialInterval obj.serialInterval];
-                [obj.rStart  (obj.rStartLock, obj.rStart, 0) iff(obj.rStartLock, obj.rStart, 5)];
+                [obj.rStart  iff(obj.rStartLock, obj.rStart, 0) iff(obj.rStartLock, obj.rStart, 5)];
                 [obj.rEnd 0 1];
                 [obj.rOnset obj.rOnset obj.rOnset];
                 [obj.rSlope 0 inf];

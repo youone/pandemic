@@ -9,6 +9,7 @@ classdef Country < handle
         name = ''; 
         nmean = 14;
         firstCaseDay = 0;
+        dataSource = 'finantialTimes';
     end
     
     methods
@@ -27,6 +28,7 @@ classdef Country < handle
             end
             global allData;
             global fohmData;
+            global whoData;
 
             if nargin == 0
                 clc
@@ -35,8 +37,11 @@ classdef Country < handle
             else
                 obj.name = name;
             end
-            cdata = obj.getCountry('world', obj.name);
-            obj.population = cdata.population;
+%             cdata = obj.getCountry('world', obj.name);
+%             obj.population = cdata.population;
+            obj.population = 1000000;
+            obj.loadData();
+            obj.dates
             
 %             obj.fitModel(shift);
         end
@@ -146,8 +151,32 @@ classdef Country < handle
         %
         %
         %
-        function outputArg = method1(obj,inputArg)
-            outputArg = obj.Property1 + inputArg;
+        function drawCases(obj)
+            plot(obj.dates, obj.cases, '.-');
+        end
+        
+        %
+        %
+        %
+        function drawDeaths(obj)
+            plot(obj.dates, obj.deaths, '.-');
+        end
+        
+        %
+        %
+        %
+        function loadData(obj)
+            global whoData;
+            
+            disp('LOADING DATA')
+            obj.deaths = whoData(whoData.Country==obj.name & whoData.Date_reported > '2020-01-22',:).New_deaths;
+            obj.cases = whoData(whoData.Country==obj.name & whoData.Date_reported > '2020-01-22',:).New_cases;
+            datesTmp = whoData(whoData.Country==obj.name & whoData.Date_reported > '2020-01-22',:).Date_reported;
+%             dates = datetime(datenum(datesTmp) - min(datenum(datesTmp)) + datenum('23-Jan-2020'),'ConvertFrom','datenum');
+            obj.dates = datetime(datenum(datesTmp),'ConvertFrom','datenum');
+%             plot(dates,movmean(deaths,1),'.');
+            obj.days = 1:length(obj.deaths);
+
         end
         
         %
@@ -157,10 +186,18 @@ classdef Country < handle
             global allData;
             global fohmData;
 
+            switch name
+                case 'Sweden'
+                    obj.dataSource = 'who';
+                otherwise
+                    obj.dataSource = 'finantialTimes';
+            end
+
             index = 1;
             for c = {allData.(continent).area}
                 if strcmp(c{1}, name)
                     country = allData.(continent)(index);
+                    disp(cell2mat(country.timeSeries(1)))
                 end
                 index=index+1;
             end

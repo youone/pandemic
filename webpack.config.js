@@ -13,7 +13,7 @@ const config = {
         libraryTarget: 'umd'
     },
     devServer: {
-        port: 3333,
+        port: 4444,
     },
     module: {
         rules: [
@@ -35,7 +35,16 @@ const config = {
                     },
                 }]
             },
-        ],
+            {
+                test: /\.csv$/,
+                loader: 'csv-loader',
+                options: {
+                    dynamicTyping: true,
+                    header: true,
+                    skipEmptyLines: true
+                }
+            }
+],
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],

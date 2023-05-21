@@ -1,0 +1,31 @@
+{
+	"Sweden": {
+		"index": 182,
+		"max": 0,
+		"sigma": 0,
+	},
+	"Denmark": {
+		"index": 53,
+		"maxbin": 99,
+		"minbin": 74,
+		"height": 2.9049,
+		"mean": 27.2417,
+		"sigma": 13.6546,
+	},
+	"Norway": {
+		"index": 144,
+		"maxbin": 109,
+		"minbin": 70,
+		"height": 1.3898,
+		"mean": 35.6027,
+		"sigma": 15.0790,
+	},
+	"Germany": {
+		"index": 74,
+		"maxbin": 111,
+		"minbin": 68,
+		"height": 2.7422,
+		"mean": 40.3944,
+		"sigma": 16.8688,
+	},
+}

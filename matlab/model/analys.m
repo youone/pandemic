@@ -3,7 +3,7 @@ clc
 close all 
 
 websave('fohmData.xlsx', 'https://github.com/adamaltmejd/covid/blob/master/data/FHM/Folkhalsomyndigheten_Covid19_2021-02-19.xlsx?raw=true')
-websave('worldData.json', 'https://ig.ft.com/coronavirus-chart/data.json')
+%websave('worldData.json', 'https://ig.ft.com/coronavirus-chart/data.json')
 
 % data = webread('https://ig.ft.com/coronavirus-chart/data.json')
 %allData = jsondecode(fileread('worldData.json'));

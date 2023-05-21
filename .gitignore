@@ -1,2 +1,5 @@
 data
 /.idea/
+*.mat
+*.xlsx
+matlab/model/worldData.json

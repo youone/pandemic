@@ -83,12 +83,12 @@ export class PandemicPlot extends HTMLElement {
                 "translate(" + margin.left + "," + margin.top + ")");
 
         this.svg.append("g")
-            .attr("class", "x axis")
+            .attr("class", "x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(this.xAxis);
 
         this.svg.append("g")
-            .attr("class", "y axis")
+            .attr("class", "y-axis")
             .call(this.yAxis);
 
         console.log(this.xScale.invert(0));
@@ -132,6 +132,8 @@ export class PandemicPlot extends HTMLElement {
                         })
 
                         this.parameterChangeHandler(this.nInfected);
+
+
                     },
                     end: (event) => {
                         // this.nInfected.forEach(d => console.log(Math.round(d)));
@@ -147,6 +149,15 @@ export class PandemicPlot extends HTMLElement {
         const dta = data;
 
         $(this).find('.datapath').remove();
+
+        if (this.type === 'cases') {
+            const maxValue = d3.max(dta.map(d => d.value));
+            console.log(maxValue);
+            this.yScale.domain([0, 1.5*maxValue]);
+            this.svg.select(".y-axis")
+            .call(this.yAxis);
+        }
+
 
         this.svg.append("path")
             .datum(dta)

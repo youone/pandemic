@@ -10,7 +10,7 @@ export class PandemicPlot extends HTMLElement {
         this.type = type;
         // this.ymax = ymax;
         this.models = {};
-        this.margin = {top: 10, right: 20, bottom: 30, left: 50};
+        this.margin = {top: 10, right: 20, bottom: 30, left: 75};
 
     }
 
@@ -143,8 +143,8 @@ export class PandemicRPlot extends PandemicPlot {
                 .datum(dta)
                 .attr("class", "datapath")
                 .attr("fill", "none")
-                .attr("stroke", "steelblue")
-                .attr("stroke-width", m.selected ? 3 : 1.5)
+                .attr("stroke", m.model.color)
+                .attr("stroke-width", m.selected ? 2 : 1)
                 .attr("d", d3.line()
                     .x((d) => {
                         // console.log(d);
@@ -162,13 +162,18 @@ export class PandemicRPlot extends PandemicPlot {
         // .extent([[this.margin.left, this.margin.top], [this.width - this.margin.right, this.height - this.margin.bottom]])
         .extent([[0, 0], [this.width, 30]])
         .on("start brush end", (event) => {
-            if (!event.sourceEvent) return;
             const selection = event.selection;
             const [x0, x1] = selection.map(this.xScale.invert);
-            console.log(x0, x1);
-            this.selectedModel.model.setR('start', x0);
-            this.selectedModel.model.setR('stop', x1);
-            this.selectedModel.brushes.rBrush.call(brush.move, [Math.round(x0), Math.round(x1)].map(this.xScale));
+            if (event.sourceEvent) {
+                this.selectedModel.brushes.rBrush.call(brush.move, [Math.round(x0), Math.round(x1)].map(this.xScale));
+            }
+            else {
+                try {
+                    this.selectedModel.model.setR('start', x0);
+                    this.selectedModel.model.setR('stop', x1);
+                }
+                catch(e) {}
+            }
         });
 
         const rBrush = this.svg.append("g")
@@ -189,7 +194,7 @@ export class PandemicRPlot extends PandemicPlot {
         Object.values(this.models).forEach(m => {
             m.selected = m.model.name === name ? true : false
             m.brushes.rBrush.node().style.display = m.model.name === name ? 'block' : 'none';
-            if (m.path) m.path.node().setAttribute('stroke-width', m.model.name === name ? 3 : 1.5);
+            if (m.path) m.path.node().setAttribute('stroke-width', m.model.name === name ? 2 : 1);
         })
     }
 
@@ -269,7 +274,6 @@ export class PandemicCasePlot extends PandemicPlot {
                 const dta = m.model.nInfected;
                 maxVal = d3.max(dta.map(d => d.value));
                 if (maxVal > maxValue) maxValue = maxVal;
-                console.log(maxValue);
             })
 
             Object.values(this.models).forEach(m => {
@@ -286,8 +290,8 @@ export class PandemicCasePlot extends PandemicPlot {
                     .datum(dta)
                     .attr("class", `datapath ${mod.name}`)
                     .attr("fill", "none")
-                    .attr("stroke", "steelblue")
-                    .attr("stroke-width", m.selected ? 3 : 1.5)
+                    .attr("stroke", m.model.color)
+                    .attr("stroke-width", m.selected ? 2 : 1)
                     .attr("d", d3.line()
                         .x((d) => {
                             // console.log(d);
@@ -300,13 +304,16 @@ export class PandemicCasePlot extends PandemicPlot {
                     )
             })
         })
+
+        this.selectModel(name);
+
     }
 
     selectModel(name) {
         this.selectedModel = this.models[name];
         Object.values(this.models).forEach(m => {
             m.selected = m.model.name === name ? true : false
-            m.path.node().setAttribute('stroke-width', m.model.name === name ? 3 : 1.5);
+            if (m.path) m.path.node().setAttribute('stroke-width', m.model.name === name ? 2 : 1);
         })
     }
 
